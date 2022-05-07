@@ -48,10 +48,11 @@ class MarkEntryReadTest(TestCase):
         with patch('feedreader.views.Entry', entry_class_mock):
             url = reverse('feedreader:mark_entry_read') + '?entry_id=1'
             response = self.client.get(url, secure=True)
-            self.assertEqual(response.status_code,
-                             200,
-                             'URL %s: Unexpected status code, got %s expected 200' %
-                             (url, response.status_code))
+            self.assertEqual(
+                response.status_code,
+                200,
+                f'URL {url}: Unexpected status code, got {response.status_code} expected 200',
+            )
 
     def test_mark_missing_entry(self):
         """Mark unread entry as read"""
@@ -60,10 +61,11 @@ class MarkEntryReadTest(TestCase):
         with patch('feedreader.views.Entry.objects.get', entry_get_mock):
             url = reverse('feedreader:mark_entry_read') + '?entry_id=2'
             response = self.client.get(url, secure=True)
-            self.assertEqual(response.status_code,
-                             200,
-                             'URL %s: Unexpected status code, got %s expected 200' %
-                             (url, response.status_code))
+            self.assertEqual(
+                response.status_code,
+                200,
+                f'URL {url}: Unexpected status code, got {response.status_code} expected 200',
+            )
 
 
 class LoadOPMLTest(TestCase):
@@ -83,10 +85,11 @@ class LoadOPMLTest(TestCase):
         response = self.client.post(url,
                                     {'opml_file': self.opml_file},
                                     secure=True)
-        self.assertEqual(response.status_code,
-                         200,
-                         'URL %s: Unexpected status code, got %s expected 200' %
-                         (url, response.status_code))
+        self.assertEqual(
+            response.status_code,
+            200,
+            f'URL {url}: Unexpected status code, got {response.status_code} expected 200',
+        )
 
 
 class EditFeedsTest(TestCase):
@@ -114,10 +117,11 @@ class EditFeedsTest(TestCase):
                 edit_feeds_view = EditFeeds()
                 edit_feeds_view.request = self.request_mock
                 response = edit_feeds_view.form_valid(self.form_mock)
-                self.assertEqual(response.status_code,
-                                 200,
-                                 'Unexpected status code, got %s expected 200' %
-                                 (response.status_code))
+                self.assertEqual(
+                    response.status_code,
+                    200,
+                    f'Unexpected status code, got {response.status_code} expected 200',
+                )
 
 
 def setUpModule():
@@ -135,7 +139,7 @@ class UpdateItemTest(TestCase):
 
     def setUp(self):
         """Create data and login"""
-        self.feed = Feed.objects.create(xml_url='http://localhost:%s/test/feed' % (PORT))
+        self.feed = Feed.objects.create(xml_url=f'http://localhost:{PORT}/test/feed')
         self.group = Group.objects.create(name='Test Group')
         self.feed.group = self.group
         self.feed.save()
@@ -151,26 +155,39 @@ class UpdateItemTest(TestCase):
     def test_delete_item(self):
         """Delete item"""
         url = reverse('feedreader:update_item')
-        response = self.client.post(url,
-                                    {'identifier': 'feedreader-Feed-delete-%s' % self.feed.id,
-                                     'data_value': 'on'},
-                                    secure=True)
-        self.assertEqual(response.status_code,
-                         200,
-                         'Unexpected status code, got %s expected 200' %
-                         (response.status_code))
+        response = self.client.post(
+            url,
+            {
+                'identifier': f'feedreader-Feed-delete-{self.feed.id}',
+                'data_value': 'on',
+            },
+            secure=True,
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+            f'Unexpected status code, got {response.status_code} expected 200',
+        )
 
     def test_update_text(self):
         """Update text field"""
         url = reverse('feedreader:update_item')
-        response = self.client.post(url,
-                                    {'identifier': 'feedreader-Feed-title-%s' % self.feed.id,
-                                     'data_value': 'Test Title 2'},
-                                    secure=True)
-        self.assertEqual(response.status_code,
-                         200,
-                         'Unexpected status code, got %s expected 200' %
-                         (response.status_code))
+        response = self.client.post(
+            url,
+            {
+                'identifier': f'feedreader-Feed-title-{self.feed.id}',
+                'data_value': 'Test Title 2',
+            },
+            secure=True,
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+            f'Unexpected status code, got {response.status_code} expected 200',
+        )
+
         feed = Feed.objects.get(pk=self.feed.id)
         self.assertEqual(feed.title,
                          'Test Title 2',
@@ -181,31 +198,51 @@ class UpdateItemTest(TestCase):
     def test_update_boolean(self):
         """Update boolean field"""
         url = reverse('feedreader:update_item')
-        response = self.client.post(url,
-                                    {'identifier': 'auth-User-is_superuser-%s' % self.user.id, 'data_value': 'true'},
-                                    secure=True)
-        self.assertEqual(response.status_code,
-                         200,
-                         'Unexpected status code, got %s expected 200' %
-                         (response.status_code))
+        response = self.client.post(
+            url,
+            {
+                'identifier': f'auth-User-is_superuser-{self.user.id}',
+                'data_value': 'true',
+            },
+            secure=True,
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+            f'Unexpected status code, got {response.status_code} expected 200',
+        )
 
     def test_update_foreignkey(self):
         """Update foreign key"""
         url = reverse('feedreader:update_item')
-        response = self.client.post(url,
-                                    {'identifier': 'feedreader-Feed-group-%s' % self.feed.id,
-                                     'data_value': self.group.id},
-                                    secure=True)
-        self.assertEqual(response.status_code,
-                         200,
-                         'Unexpected status code, got %s expected 200' %
-                         (response.status_code))
+        response = self.client.post(
+            url,
+            {
+                'identifier': f'feedreader-Feed-group-{self.feed.id}',
+                'data_value': self.group.id,
+            },
+            secure=True,
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+            f'Unexpected status code, got {response.status_code} expected 200',
+        )
+
         # Update foreign key to None
-        response = self.client.post(url,
-                                    {'identifier': 'feedreader-Feed-group-%s' % self.feed.id,
-                                     'data_value': ''},
-                                    secure=True)
-        self.assertEqual(response.status_code,
-                         200,
-                         'Unexpected status code, got %s expected 200' %
-                         (response.status_code))
+        response = self.client.post(
+            url,
+            {
+                'identifier': f'feedreader-Feed-group-{self.feed.id}',
+                'data_value': '',
+            },
+            secure=True,
+        )
+
+        self.assertEqual(
+            response.status_code,
+            200,
+            f'Unexpected status code, got {response.status_code} expected 200',
+        )

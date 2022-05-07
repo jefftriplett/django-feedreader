@@ -28,8 +28,7 @@ def build_context(request, context={}):
     show_read_flag = request.GET.get('show_read_flag', None)
 
     last_entry = None
-    last_entry_id = request.GET.get('entry_id', None)  # Last entry on page
-    if last_entry_id:
+    if last_entry_id := request.GET.get('entry_id', None):
         try:
             last_entry = Entry.objects.get(pk=last_entry_id)
         except Entry.DoesNotExist:
@@ -37,16 +36,14 @@ def build_context(request, context={}):
 
     context['show_read_flag'] = show_read_flag
     feed = None
-    feed_id = request.GET.get('feed_id', None)
-    if feed_id:
+    if feed_id := request.GET.get('feed_id', None):
         try:
             feed = Feed.objects.get(pk=feed_id)
         except Feed.DoesNotExist:
             pass
 
     group = None
-    group_id = request.GET.get('group_id', None)
-    if group_id:
+    if group_id := request.GET.get('group_id', None):
         try:
             group = Group.objects.get(pk=group_id)
         except Group.DoesNotExist:

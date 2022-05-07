@@ -4,10 +4,7 @@ from django.db import models
 class OptionsManager(models.Manager):
     def get_options(self):
         options = Options.objects.all()
-        if options:
-            options = options[0]
-        else:  # Create options row with default values
-            options = Options.objects.create()
+        options = options[0] if options else Options.objects.create()
         return options
 
 

@@ -72,7 +72,7 @@ class WorkingURLsTest(TestCase):
         entry = EntryFactory.create()
         group = GroupFactory.create()
         feed = FeedFactory.create()
-        feed.xml_url = 'http://localhost:%s/test/feed' % PORT
+        feed.xml_url = f'http://localhost:{PORT}/test/feed'
         feed.group = group
         feed.save()
 
@@ -86,14 +86,14 @@ class WorkingURLsTest(TestCase):
         """Visit each URL in turn"""
         for url, status_code, expected_text in TEST_URLS:
             response = self.client.get(url)
-            self.assertEqual(response.status_code,
-                             status_code,
-                             'URL %s: Unexpected status code, got %s expected %s' %
-                             (url, response.status_code, status_code))
+            self.assertEqual(
+                response.status_code,
+                status_code,
+                f'URL {url}: Unexpected status code, got {response.status_code} expected {status_code}',
+            )
+
             if response.status_code == 200 and expected_text:
-                self.assertContains(response,
-                                    expected_text,
-                                    msg_prefix='URL %s' % (url))
+                self.assertContains(response, expected_text, msg_prefix=f'URL {url}')
 
 
 class TestPollFeedsCommand(TestCase):
@@ -106,7 +106,7 @@ class TestPollFeedsCommand(TestCase):
         entry = EntryFactory.create()
         group = GroupFactory.create()
         feed = FeedFactory.create()
-        feed.xml_url = 'http://localhost:%s/test/feed' % PORT
+        feed.xml_url = f'http://localhost:{PORT}/test/feed'
         feed.group = group
         feed.save()
 
