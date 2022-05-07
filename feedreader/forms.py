@@ -43,10 +43,9 @@ class AddFeedsForm(forms.Form):
 
     def clean_opml_file(self):
         """Check OPML file contents."""
-        opml_file = self.cleaned_data['opml_file']
-        if opml_file:
+        if opml_file := self.cleaned_data['opml_file']:
             try:
                 opml_tree = ElementTree.parse(opml_file)
             except ElementTree.ParseError as e:
-                raise forms.ValidationError('Error Parsing OPML file: %s' % e.msg)
+                raise forms.ValidationError(f'Error Parsing OPML file: {e.msg}')
             return opml_tree

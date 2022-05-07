@@ -54,7 +54,7 @@ class FeedTest(TestCase):
     """
 
     def setUp(self):
-        self.feed = Feed.objects.create(xml_url='http://localhost:%s/test/feed' % (PORT))
+        self.feed = Feed.objects.create(xml_url=f'http://localhost:{PORT}/test/feed')
         self.feed.title = 'Test Feed'
         self.feed.save()
 
@@ -73,7 +73,7 @@ class EntryTest(TestCase):
     """
 
     def setUp(self):
-        self.feed = Feed.objects.create(xml_url='http://localhost:%s/test/feed' % (PORT))
+        self.feed = Feed.objects.create(xml_url=f'http://localhost:{PORT}/test/feed')
         self.entry = Entry.objects.create(feed=self.feed,
                                           title='Test Entry',
                                           link='http://example.com/test')

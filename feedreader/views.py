@@ -25,11 +25,11 @@ class NumbersUnread(LoginRequiredMixin, View):
         groups = Group.objects.all()
         for group in groups:
             num_unread = group.num_unread_entries()
-            context['unread_group%s' % (group.id)] = num_unread
-            context['unread_group_button%s' % (group.id)] = num_unread
+            context[f'unread_group{group.id}'] = num_unread
+            context[f'unread_group_button{group.id}'] = num_unread
         feeds = Feed.objects.all()
         for feed in feeds:
-            context['unread_feed%s' % (feed.id)] = feed.num_unread_entries()
+            context[f'unread_feed{feed.id}'] = feed.num_unread_entries()
         return HttpResponse(json.dumps(context), content_type='application/json')
 
 
@@ -52,8 +52,7 @@ class EntryList(LoginRequiredMixin, ListView):
 
 class MarkEntryRead(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        entry_id = request.GET.get('entry_id', None)
-        if entry_id:
+        if entry_id := request.GET.get('entry_id', None):
             try:
                 entry = Entry.objects.get(pk=entry_id)
                 if entry.read_flag == False:
@@ -131,8 +130,7 @@ class EditFeeds(LoginRequiredMixin, FormView):
             if feed_group:
                 feed.group = feed_group
                 feed.save()
-        new_group = form.cleaned_data.get('new_group')
-        if new_group:
+        if new_group := form.cleaned_data.get('new_group'):
             group = Group.objects.create(name=new_group)
         tree = form.cleaned_data.get('opml_file')
         group = None
